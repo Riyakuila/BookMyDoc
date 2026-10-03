@@ -18,21 +18,6 @@ router.get('/', async(req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
-    try {
-        const patient = await Patient.create(req.body);
-        res.status(201).json({
-            message: 'Patient created successfully',
-            patient
-        });
-    } catch (error) {
-        res.status(400).json({
-            message: 'Failed to create patient',
-            error: error.message
-        });
-    }
-});
-
 router.get('/me', authMiddleware, roleMiddleware('Patient'), async (req, res) => {
     try {
         const patient = await Patient.findOne({
@@ -111,53 +96,6 @@ router.get('/:id', async (req, res) => {
             });
         }
         res.status(200).json(patient);
-    } catch (error) {
-        res.status(400).json({
-            message: 'Invalid patient id',
-            error: error.message
-        });
-    }
-});
-
-router.put('/:id', async(req, res) => {
-    try {
-        const patient = await Patient.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true,
-                runValidators: true
-            }
-        );
-        if(!patient){
-            res.status(404).json({
-                message: 'Patient not found'
-            });
-        }
-        res.status(200).json({
-            message: 'Patient updated successfully',
-            patient
-        });
-
-    } catch (error) {
-        res.json(400).json({
-            message: 'Failed to update patient',
-            error: error.message
-        });
-    }
-});
-
-router.delete('/:id', async(req,res) => {
-    try {
-        const patient = await Patient.findByIdAndDelete(req.params.id);
-        if(!patient){
-            res.status(404).json({
-                message: 'patient not found'
-            });
-        }
-        res.status(200).json({
-            message: 'Patient deleted successfully'
-        });
     } catch (error) {
         res.status(400).json({
             message: 'Invalid patient id',
